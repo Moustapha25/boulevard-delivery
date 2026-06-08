@@ -32,10 +32,30 @@ export default function OrderStatus() {
   }
 
   useEffect(() => {
-    fetchOrder();
-    const interval = setInterval(fetchOrder, 15000);
-    return () => clearInterval(interval);
-  }, [currentOrderId]);
+  if (!currentOrderId) return;
+
+  fetchOrder();
+
+  const channel = supabase
+    .channel(`order-status-${currentOrderId}`)
+    .on(
+      'postgres_changes',
+      {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'orders',
+        filter: `id=eq.${currentOrderId}`,
+      },
+      () => {
+        fetchOrder();
+      }
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel);
+  };
+}, [currentOrderId]);
 
   if (!currentOrderId) {
     return (

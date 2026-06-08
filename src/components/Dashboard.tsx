@@ -57,10 +57,38 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    fetchOrders();
-    const interval = setInterval(fetchOrders, 10000);
-    return () => clearInterval(interval);
-  }, [fetchOrders]);
+  fetchOrders();
+
+  const channel = supabase
+    .channel('restaurant-orders-realtime')
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'orders',
+      },
+      () => {
+        fetchOrders();
+      }
+    )
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'order_items',
+      },
+      () => {
+        fetchOrders();
+      }
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel);
+  };
+}, [fetchOrders]);
 
   async function updateStatus(orderId: string, status: OrderStatus) {
     setUpdatingId(orderId);

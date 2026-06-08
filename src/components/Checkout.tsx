@@ -28,6 +28,7 @@ export default function Checkout() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [gpsLoading, setGpsLoading] = useState(false);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [confirmedTotal, setConfirmedTotal] = useState<number | null>(null);
 
   const deliveryFee = 500;
   const total = cartTotal + deliveryFee;
@@ -94,6 +95,7 @@ export default function Checkout() {
       await supabase.from('order_items').insert(items);
 
       setCurrentOrderId(order.id);
+      setConfirmedTotal(total);
       clearCart();
       setStep('success');
     } catch {
@@ -137,7 +139,7 @@ export default function Checkout() {
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-noir-500">Total</span>
-            <span className="font-bold text-brand-500">{total.toLocaleString('fr-FR')} FCFA</span>
+            <span className="font-bold text-brand-500">{(confirmedTotal ?? total).toLocaleString('fr-FR')} FCFA</span>
           </div>
         </div>
         <div className="flex flex-col sm:flex-row gap-3">
