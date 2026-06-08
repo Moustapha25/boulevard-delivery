@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { RefreshCw, Phone, MapPin, CreditCard, Clock, Bell, CheckCircle2, XCircle } from 'lucide-react';
+import { RefreshCw, Phone, MapPin, CreditCard, Bell, CheckCircle2, XCircle, Navigation } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { Order, OrderStatus } from '../types';
 import { StatusBadge, STATUS_CONFIG } from './StatusBadge';
@@ -111,6 +111,19 @@ export default function Dashboard() {
     supabase.removeChannel(channel);
   };
 }, [fetchOrders]);
+
+function openGoogleMaps(order: Order) {
+  if (order.latitude && order.longitude) {
+    window.open(
+      `https://www.google.com/maps?q=${order.latitude},${order.longitude}`,
+      '_blank'
+    );
+    return;
+  }
+
+  const query = encodeURIComponent(`${order.neighborhood} ${order.address || ''} Niamey Niger`);
+  window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank');
+}
 
   async function updateStatus(orderId: string, status: OrderStatus) {
     setUpdatingId(orderId);
@@ -275,6 +288,13 @@ export default function Dashboard() {
 
                 {/* Actions */}
                 <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => openGoogleMaps(order)}
+                    className="btn-outline text-sm py-2 px-4"
+                  >
+                    <Navigation size={16} />
+                   Voir sur Google Maps
+                </button>
                   {order.status === 'received' && (
                     <button
                       onClick={() => updateStatus(order.id, 'refused')}
