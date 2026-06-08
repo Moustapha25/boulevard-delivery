@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { RefreshCw, Phone, MapPin, CreditCard, Clock, Bell, CheckCircle2, XCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import type { Order, OrderStatus } from '../types';
@@ -24,7 +24,23 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<'active' | 'all'>('active');
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [newOrderIds, setNewOrderIds] = useState<Set<string>>(new Set());
+  const [showNewOrderAlert, setShowNewOrderAlert] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  function playNotificationSound() {
+  try {
+    if (!audioRef.current) {
+      audioRef.current = new Audio('/notification.wav');
+    }
+
+    audioRef.current.currentTime = 0;
+    audioRef.current.play().catch(() => {
+      console.log('Son bloqué par le navigateur');
+    });
+  } catch (error) {
+    console.log('Erreur audio:', error);
+  }
+}
   const fetchOrders = useCallback(async () => {
     const { data } = await supabase
       .from('orders')
@@ -37,6 +53,12 @@ export default function Dashboard() {
         const incoming = data as Order[];
         const fresh = incoming.filter(o => !prevIds.has(o.id) && o.status === 'received');
         if (fresh.length > 0) {
+          setShowNewOrderAlert(true);
+            playNotificationSound();
+
+            setTimeout(() => {
+          setShowNewOrderAlert(false);
+          }, 6000);
           setNewOrderIds(ids => {
             const next = new Set(ids);
             fresh.forEach(o => next.add(o.id));
@@ -109,6 +131,15 @@ export default function Dashboard() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 pb-24">
+      {showNewOrderAlert && (
+  <div className="fixed top-24 right-6 z-50 bg-brand-500 text-white px-5 py-4 rounded-2xl shadow-2xl flex items-center gap-3 animate-bounce">
+    <Bell size={22} />
+    <div>
+      <div className="font-bold">Nouvelle commande !</div>
+      <div className="text-sm text-white/80">Une commande vient d’arriver.</div>
+    </div>
+  </div>
+)}
       <div className="flex items-center justify-between mb-6 mt-2">
         <div>
           <h2 className="font-display text-2xl font-bold text-noir-950">Tableau de bord</h2>
