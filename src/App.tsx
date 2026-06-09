@@ -6,6 +6,7 @@ import Checkout from './components/Checkout';
 import OrderStatus from './components/OrderStatus';
 import RestaurantPage from './pages/RestaurantPage';
 import AdminPage from './pages/AdminPage';
+import LivreurPage from './pages/LivreurPage';
 
 function AppContent() {
   const { currentView, setView } = useApp();
@@ -32,6 +33,7 @@ function AppContent() {
         )}
         {currentView === 'restaurant' && <RestaurantPage />}
         {currentView === 'admin' && <AdminPage />}
+        {currentView === 'livreur' && <LivreurPage />}
       </main>
 
       {/* Footer */}
@@ -69,6 +71,12 @@ function AppContent() {
                   className="text-noir-500 hover:text-brand-400 text-xs transition-colors"
                 >
                   Administration
+                </button>
+                <button
+                 onClick={() => setView('livreur')}
+                  className="text-noir-500 hover:text-brand-400 text-xs transition-colors"
+                >
+                   Espace Livreur
                 </button>
               </div>
             </div>

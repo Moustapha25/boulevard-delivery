@@ -57,4 +57,5 @@ export type AppView =
   | 'checkout'
   | 'order-status'
   | 'restaurant'
-  | 'admin';
+  | 'admin'
+  | 'livreur';
