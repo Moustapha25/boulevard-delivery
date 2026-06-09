@@ -4,7 +4,22 @@ import FoodCard from './FoodCard';
 import type { Dish } from '../types';
 import { supabase } from '../lib/supabase';
 
-const CATEGORIES = ['Tous', 'Riz', 'Grillades', 'Sandwichs', 'Boissons'];
+const CATEGORIES = [
+  'Tous',
+  'Plats BBQ',
+  'Burgers',
+  'Pizzas',
+  'Sandwiches',
+  'Baguettes',
+  'Happy Meal',
+  'Salades',
+  'Accompagnements',
+  'Boissons',
+  'Boissons Chaudes',
+  'Jus Frais',
+  'Shakes',
+  'Desserts',
+];
 
 export default function Menu() {
   const [dishes, setDishes] = useState<Dish[]>([]);
@@ -59,22 +74,24 @@ export default function Menu() {
         />
       </div>
 
-      {/* Category tabs */}
-      <div className="flex gap-2 overflow-x-auto pb-2 mb-8 scrollbar-thin">
-        {CATEGORIES.map(cat => (
-          <button
-            key={cat}
-            onClick={() => setActiveCategory(cat)}
-            className={`flex-shrink-0 px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 ${
-              activeCategory === cat
-                ? 'bg-brand-500 text-white shadow-brand'
-                : 'bg-white border border-noir-200 text-noir-600 hover:border-brand-500 hover:text-brand-600'
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
+     {/* Category tabs */}
+<div className="relative mb-8">
+  <div className="flex gap-2 overflow-x-auto whitespace-nowrap pb-3 scrollbar-thin scroll-smooth">
+    {CATEGORIES.map(cat => (
+      <button
+        key={cat}
+        onClick={() => setActiveCategory(cat)}
+        className={`flex-shrink-0 px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 ${
+          activeCategory === cat
+            ? 'bg-brand-500 text-white shadow-brand'
+            : 'bg-white border border-noir-200 text-noir-600 hover:border-brand-500 hover:text-brand-600'
+        }`}
+      >
+        {cat}
+      </button>
+    ))}
+  </div>
+</div>
 
       {/* Dishes grid */}
       {loading ? (
