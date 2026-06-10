@@ -130,6 +130,11 @@ export default function LivreurPage() {
                 >
                   {order.status === 'ready' ? 'Prête à livrer' : 'En livraison'}
                 </span>
+                  {order.driver_name && (
+                 <div className="w-full text-sm text-brand-600 font-semibold">
+                 Livreur assigné : {order.driver_name}
+             </div>
+                )}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4 text-sm">

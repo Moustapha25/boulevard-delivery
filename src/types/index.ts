@@ -43,6 +43,7 @@ export interface Order {
   latitude: number | null;
   longitude: number | null;
   payment_method: PaymentMethod;
+  driver_name: string | null;
   status: OrderStatus;
   total: number;
   notes: string | null;

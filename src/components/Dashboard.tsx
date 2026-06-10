@@ -18,6 +18,8 @@ const NEXT_LABEL: Partial<Record<OrderStatus, string>> = {
   delivering: 'Marquer livrée',
 };
 
+const DRIVERS = ['Ibrahim', 'Moussa', 'Ali'];
+
 export default function Dashboard() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -123,6 +125,17 @@ function openGoogleMaps(order: Order) {
 
   const query = encodeURIComponent(`${order.neighborhood} ${order.address || ''} Niamey Niger`);
   window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank');
+}
+
+async function assignDriver(orderId: string, driverName: string) {
+  setUpdatingId(orderId);
+  await supabase
+    .from('orders')
+    .update({ driver_name: driverName })
+    .eq('id', orderId);
+
+  await fetchOrders();
+  setUpdatingId(null);
 }
 
   async function updateStatus(orderId: string, status: OrderStatus) {
@@ -286,6 +299,32 @@ function openGoogleMaps(order: Order) {
                   )}
                 </div>
 
+                  {order.status !== 'delivered' && order.status !== 'refused' && (
+                <div className="mb-4">
+               <label className="block text-xs font-semibold text-noir-500 uppercase tracking-wider mb-2">
+               Livreur assigné
+               </label>
+
+               <select
+               value={order.driver_name || ''}
+                onChange={e => assignDriver(order.id, e.target.value)}
+                 className="input-field text-sm max-w-xs"
+               >
+                 <option value="">Choisir un livreur...</option>
+                 {DRIVERS.map(driver => (
+                  <option key={driver} value={driver}>
+                 {driver}
+                  </option>
+                 ))}
+              </select>
+
+    {order.driver_name && (
+      <p className="text-xs text-brand-600 font-semibold mt-2">
+        Livreur : {order.driver_name}
+      </p>
+    )}
+  </div>
+)}
                 {/* Actions */}
                 <div className="flex flex-wrap gap-2">
                   <button
