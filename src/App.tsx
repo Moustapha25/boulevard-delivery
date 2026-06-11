@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useApp } from './context/AppContext';
 import Header from './components/Header';
 import HomePage from './pages/HomePage';
@@ -10,6 +11,14 @@ import LivreurPage from './pages/LivreurPage';
 
 function AppContent() {
   const { currentView, setView } = useApp();
+  useEffect(() => {
+  const params = new URLSearchParams(window.location.search);
+  const view = params.get('view');
+
+  if (view === 'admin') setView('admin');
+  if (view === 'restaurant') setView('restaurant');
+  if (view === 'livreur') setView('livreur');
+}, [setView]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -59,6 +68,7 @@ function AppContent() {
               <p className="text-noir-500 text-xs">
                 © 2024 Boulevard Delivery. Tous droits réservés.
               </p>
+              {/*
               <div className="flex gap-4">
                 <button
                   onClick={() => setView('restaurant')}
@@ -73,14 +83,15 @@ function AppContent() {
                   Administration
                 </button>
                 <button
-                 onClick={() => setView('livreur')}
+                  onClick={() => setView('livreur')}
                   className="text-noir-500 hover:text-brand-400 text-xs transition-colors"
                 >
-                   Espace Livreur
+                  Espace Livreur
                 </button>
               </div>
+              */}
+              </div>
             </div>
-          </div>
         </footer>
       )}
     </div>
