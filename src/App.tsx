@@ -66,7 +66,7 @@ function AppContent() {
             </div>
             <div className="border-t border-white/10 mt-8 pt-6 flex flex-col md:flex-row items-center justify-between gap-3">
               <p className="text-noir-500 text-xs">
-                © 2024 Boulevard Delivery. Tous droits réservés.
+                © 2026 Boulevard Delivery. Tous droits réservés.
               </p>
               {/*
               <div className="flex gap-4">
